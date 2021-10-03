@@ -16,7 +16,7 @@
     "@tailwindcss/postcss7-compat": "^2.0.2",
     "autoprefixer": "^9",
     "axios": "^0.21.4",
-    "core-js": "^3.6.5",
+    "core-js": "^3.18.1",
     "league-typenode": "^1.0.1",
     "postcss": "^7",
     "riot-games-api-typescript": "^2.2.0",

@@ -68,6 +68,12 @@ export interface Perks {
   perkSubStyle: number;
 }
 
+export interface ChampionDto {
+  key: string;
+  name: string;
+  image: { full: string };
+}
+
 export interface Champion {
   name: string;
   image: string;
@@ -107,7 +113,7 @@ export default class LolApi {
     this.champions = {};
 
     const championData = (
-      await axios.get(
+      await axios.get<{ data: { [key: string]: ChampionDto } }>(
         `https://ddragon.leagueoflegends.com/cdn/${latestVersion}/data/${language}/champion.json`
       )
     ).data;
@@ -159,7 +165,7 @@ export default class LolApi {
     if (USE_DUMMY_DATA) {
       return summoner;
     }
-    const resp = await this.client.get(
+    const resp = await this.client.get<{ data: SummonerDto }>(
       `/summoner/v4/summoners/by-name/${encodeURIComponent(summonerName)}`
     );
     return resp.data?.data;
@@ -171,7 +177,7 @@ export default class LolApi {
     if (USE_DUMMY_DATA) {
       return game;
     }
-    const resp = await this.client.get(
+    const resp = await this.client.get<{ data: CurrentGameInfo }>(
       `/spectator/v4/active-games/by-summoner/${encodeURIComponent(
         encryptedSummonerId
       )}`

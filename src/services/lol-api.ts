@@ -107,7 +107,7 @@ export default class LolApi {
   public async loadStaticData(): Promise<void> {
     const language = "en_US";
     const latestVersion = (
-      await axios.get("//ddragon.leagueoflegends.com/api/versions.json")
+      await axios.get("https://ddragon.leagueoflegends.com/api/versions.json")
     ).data[0] as string;
 
     this.champions = {};

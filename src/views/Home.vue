@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Watch } from "vue-property-decorator";
+import { Component, Vue } from "vue-property-decorator";
 import Game from "@/components/Game.vue"; // @ is an alias to /src
 
 @Component({
@@ -64,11 +64,6 @@ export default class Home extends Vue {
   mounted(): void {
     this.error = this.$route.query["error"] as string;
     this.region = (this.$route.query["region"] as string) ?? "euw1";
-  }
-
-  @Watch("$route.query.region")
-  onRegionChanged(to: string): void {
-    console.log("Region changed to", to);
   }
 
   submit(): void {

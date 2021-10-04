@@ -1,9 +1,9 @@
-name: Build
+name: Test and Build
 on: push
 
 jobs:
   build:
-    name: Vue Cli build
+    name: Vue Cli test and build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -12,5 +12,7 @@ jobs:
           node-version: "15"
       - name: Install packages
         run: npm i
+      - name: Test
+        run: npm run test
       - name: Build
         run: npm run build

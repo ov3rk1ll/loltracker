@@ -1,5 +1,11 @@
 <template>
   <div class="bg-gray-900 text-white m-4 p-2">
+    <div class="w-max-96 w-full">
+      <img
+        src="../assets/logo.png"
+        class="mb-4 block text-center w-max-96 mx-auto"
+      />
+    </div>
     <div
       v-if="error"
       class="

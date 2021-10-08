@@ -10,7 +10,7 @@ afterEach(() => {
 
 describe("Api.ts", () => {
   it("set baseURL to region", async () => {
-    const api = new LolApi("euw1");
+    new LolApi("euw1");
 
     expect(mockAxios.create).toHaveBeenCalledWith({
       baseURL: `https://lol-tracker-spectator.herokuapp.com/euw1`,

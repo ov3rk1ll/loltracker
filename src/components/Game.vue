@@ -25,6 +25,13 @@
         :checked.sync="config.timeShowMinutes"
         settingsKey="loltracker_config_time-show-minutes"
       />
+      <IconToggle
+        v-if="game && isWakelockSupported()"
+        :icon="'sun'"
+        :checked.sync="config.keepScreenOn"
+        settingsKey="loltracker_config_keep-screen-on"
+        class="ml-4"
+      />
     </div>
     <div v-if="loading" class="text-4xl text-white text-center m-10">
       LOADING...
@@ -89,7 +96,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Vue } from "vue-property-decorator";
+import { Component, Prop, Vue, Watch } from "vue-property-decorator";
 import draggable from "vuedraggable";
 import LolApi, {
   CurrentGameInfo,
@@ -122,8 +129,12 @@ export default class Game extends Vue {
 
   private enableDraggable = false;
 
+  // eslint-disable-next-line no-undef
+  private wakeLock: WakeLockSentinel | null = null;
+
   private config: ChampionComponentConfig = {
     timeShowMinutes: true,
+    keepScreenOn: "wakeLock" in navigator,
   };
 
   mounted(): void {
@@ -140,6 +151,10 @@ export default class Game extends Vue {
         query: { error: "404", region: this.region },
       });
       return;
+    }
+
+    if (this.isWakelockSupported()) {
+      this.onWakeLockChanged(this.config.keepScreenOn);
     }
 
     try {
@@ -229,6 +244,27 @@ export default class Game extends Vue {
     return players.findIndex(
       (x) => x.spell1Id === spell || x.spell2Id === spell
     );
+  }
+
+  private isWakelockSupported(): boolean {
+    return "wakeLock" in navigator;
+  }
+
+  @Watch("config.keepScreenOn")
+  private async onWakeLockChanged(to: boolean) {
+    if (to) {
+      try {
+        this.wakeLock = await navigator.wakeLock.request("screen");
+      } catch (err) {
+        // The Wake Lock request has failed - usually system related, such as battery.
+      }
+    } else {
+      if (this.wakeLock) {
+        this.wakeLock.release().then(() => {
+          this.wakeLock = null;
+        });
+      }
+    }
   }
 }
 </script>

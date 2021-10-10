@@ -25,6 +25,7 @@
   "devDependencies": {
     "@samhammer/vue-cli-plugin-stylelint": "~2.1.0",
     "@tailwindcss/postcss7-compat": "^2.2.16",
+    "@types/dom-screen-wake-lock": "^1.0.0",
     "@types/jest": "^27.0.2",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",

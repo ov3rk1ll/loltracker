@@ -7,6 +7,7 @@ import {
   faChevronLeft,
   faSort,
   faClock,
+  faSun,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import "./assets/tailwind.css";
@@ -14,6 +15,7 @@ import "./assets/tailwind.css";
 library.add(faChevronLeft);
 library.add(faSort);
 library.add(faClock);
+library.add(faSun);
 
 Vue.component("font-awesome-icon", FontAwesomeIcon);
 

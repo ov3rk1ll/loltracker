@@ -52,6 +52,7 @@ import SummonerSpell from "./SummonerSpell.vue";
 
 export interface ChampionComponentConfig {
   timeShowMinutes: boolean;
+  keepScreenOn: boolean;
 }
 
 @Component({

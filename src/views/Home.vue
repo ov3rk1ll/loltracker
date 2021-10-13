@@ -49,6 +49,15 @@
         Search
       </button>
     </form>
+
+    <div class="mt-4 text-center text-lg">
+      or open the
+      <router-link
+        :to="{ path: '/game', query: { region: 'euw1', demo: true } }"
+        class="underline hover:text-gray-400"
+        >demo</router-link
+      >.
+    </div>
   </div>
 </template>
 

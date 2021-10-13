@@ -34,6 +34,18 @@ describe("Api.ts", () => {
     );
   });
 
+  it("no request in demo mode", async () => {
+    const api = new LolApi("euw1", true);
+
+    await api.getSummonerByName("test");
+
+    expect(mockAxios.get).not.toHaveBeenCalled();
+
+    await api.getCurrentGameInfo("test");
+
+    expect(mockAxios.get).not.toHaveBeenCalled();
+  });
+
   it("request Game", async () => {
     const api = new LolApi("euw1");
 
@@ -52,7 +64,7 @@ describe("Api.ts", () => {
     expect(gameData).toEqual(game);
 
     expect(mockAxios.get).toHaveBeenCalledWith(
-      "/spectator/v4/active-games/by-summoner/XfcqTmj0bS9NE5AnlfAmi_CAwUP6WhSzYo7BGs6TIxv9eX8"
+      "/spectator/v4/active-games/by-summoner/Player-200-1"
     );
     expect(mockAxios.get).toHaveBeenCalledWith(
       "/summoner/v4/summoners/by-name/test"

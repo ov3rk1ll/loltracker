@@ -90,14 +90,13 @@ export interface Item {
   id: number;
 }
 
-const USE_DUMMY_DATA = false;
 export default class LolApi {
   private client: AxiosInstance;
 
   private champions: { [key: number]: Champion } = {};
   private summonerSpells: { [key: number]: SummonerSpell } = {};
 
-  constructor(region: string) {
+  constructor(region: string, private useDemoData: boolean = false) {
     this.client = axios.create({
       baseURL: `https://lol-tracker-spectator.herokuapp.com/${region}`,
       //baseURL: `http://localhost:5000/${region}`,
@@ -162,7 +161,7 @@ export default class LolApi {
   }
 
   public async getSummonerByName(summonerName: string): Promise<SummonerDto> {
-    if (USE_DUMMY_DATA) {
+    if (this.useDemoData) {
       return summoner;
     }
     const resp = await this.client.get<{ data: SummonerDto }>(
@@ -174,7 +173,7 @@ export default class LolApi {
   public async getCurrentGameInfo(
     encryptedSummonerId: string
   ): Promise<CurrentGameInfo> {
-    if (USE_DUMMY_DATA) {
+    if (this.useDemoData) {
       return game;
     }
     const resp = await this.client.get<{ data: CurrentGameInfo }>(

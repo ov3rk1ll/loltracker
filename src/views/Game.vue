@@ -3,6 +3,7 @@
     <GameComponent
       :summonerName="summonerName"
       :region="region"
+      :demoMode="demoMode"
       v-if="region"
     />
     <div v-else>Region not set!</div>
@@ -22,6 +23,7 @@ import { Route } from "vue-router";
 export default class Game extends Vue {
   private region = "";
   private summonerName = "";
+  private demoMode = false;
 
   mounted(): void {
     this.onRouteChange(this.$route);
@@ -31,6 +33,7 @@ export default class Game extends Vue {
   onRouteChange(to: Route): void {
     this.region = to.query["region"] as string;
     this.summonerName = to.query["name"] as string;
+    this.demoMode = !!to.query["demo"];
   }
 }
 </script>

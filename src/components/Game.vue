@@ -116,8 +116,9 @@ import IconToggle from "./IconToggle.vue";
 export default class Game extends Vue {
   @Prop() private summonerName!: string;
   @Prop() private region!: string;
+  @Prop() private demoMode!: boolean;
 
-  public api: LolApi = new LolApi(this.region);
+  public api: LolApi = new LolApi(this.region, this.demoMode);
 
   private loading = true;
 

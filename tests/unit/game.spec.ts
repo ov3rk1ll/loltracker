@@ -19,7 +19,7 @@ describe("Game.vue", () => {
   });
 
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  it("more", async () => {
+  /*it("more", async () => {
     const wrapper = shallowMount(Game, {
       propsData: { summonerName: "test", region: "euw1", demoMode: true },
     });
@@ -29,5 +29,5 @@ describe("Game.vue", () => {
     await (wrapper.vm as any).api.loadStaticData();
 
     expect((wrapper.vm as any).loading).toEqual(false);
-  });
+  });*/
 });

@@ -58,7 +58,12 @@
         @end="drag = false"
       >
         <div v-for="p in enemyTeam" v-bind:key="p.summonerId">
-          <Champion :api="api" :participant="p" :config="config" />
+          <Champion
+            :api="api"
+            :participant="p"
+            :config="config"
+            :gameId="game.gameId"
+          />
         </div>
       </draggable>
 
@@ -105,6 +110,13 @@ import LolApi, {
 } from "../services/lol-api";
 import Champion, { ChampionComponentConfig } from "./Champion.vue";
 import IconToggle from "./IconToggle.vue";
+
+export interface GameUpdate {
+  index: number;
+  spellId: number;
+  summonerId: string;
+  cooldown: number;
+}
 
 @Component({
   components: {

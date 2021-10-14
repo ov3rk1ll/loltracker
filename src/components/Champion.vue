@@ -34,19 +34,22 @@
         :participant="participant"
         :index="1"
         :config="config"
+        :gameId="gameId"
       />
       <SummonerSpell
         :api="api"
         :participant="participant"
         :index="2"
         :config="config"
+        :gameId="gameId"
       />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import LolApi, { CurrentGameParticipant } from "@/services/lol-api";
+import LolApi, { CurrentGameParticipant, Item } from "@/services/lol-api";
+import { Channel } from "pusher-js";
 import { Component, Prop, Vue } from "vue-property-decorator";
 import SummonerSpell from "./SummonerSpell.vue";
 
@@ -64,8 +67,22 @@ export default class Champion extends Vue {
   @Prop() private participant!: CurrentGameParticipant;
   @Prop() private api!: LolApi;
   @Prop() private config!: ChampionComponentConfig;
+  @Prop() private gameId!: number;
+
+  private pusherChannel: Channel | null = null;
 
   // TODO Make Unsealed Spellbook open a dialog to change both spells
+
+  mounted(): void {
+    this.pusherChannel = this.$pusher.subscribe("private-game-" + this.gameId);
+
+    this.pusherChannel.bind(
+      `client-item-${this.participant.summonerId}`,
+      (items: Item[]) => {
+        this.participant.items = items;
+      }
+    );
+  }
 
   private toggleBoots(): void {
     if (this.participant.items.find((x) => (x.id = 3158))) {
@@ -76,6 +93,11 @@ export default class Champion extends Vue {
         name: "Ionian Boots of Lucidity",
       });
     }
+
+    this.pusherChannel?.trigger(
+      `client-item-${this.participant.summonerId}`,
+      this.participant.items
+    );
   }
 }
 </script>

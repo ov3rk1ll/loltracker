@@ -1,9 +1,13 @@
-import { shallowMount } from "@vue/test-utils";
+import { createLocalVue, shallowMount } from "@vue/test-utils";
 
 import SummonerSpell from "@/components/SummonerSpell.vue";
 import LolApi, { CurrentGameInfo } from "@/services/lol-api";
+import { PusherPlugin } from "@/services/pusher";
 
 jest.unmock("axios");
+
+const localVue = createLocalVue();
+localVue.use(PusherPlugin, { appKey: "test-key" });
 
 describe("SummonerSpell.vue", () => {
   let api: LolApi;
@@ -21,6 +25,7 @@ describe("SummonerSpell.vue", () => {
 
   it("correct icon index 1", async () => {
     const wrapper = shallowMount(SummonerSpell, {
+      localVue,
       propsData: {
         index: 1,
         participant: game.participants[0],
@@ -36,6 +41,7 @@ describe("SummonerSpell.vue", () => {
 
   it("correct icon index 2", async () => {
     const wrapper = shallowMount(SummonerSpell, {
+      localVue,
       propsData: {
         index: 2,
         participant: game.participants[0],
@@ -53,6 +59,7 @@ describe("SummonerSpell.vue", () => {
     jest.useFakeTimers();
 
     const wrapper = shallowMount(SummonerSpell, {
+      localVue,
       propsData: {
         index: 1,
         participant: game.participants[0],
@@ -97,6 +104,7 @@ describe("SummonerSpell.vue", () => {
     jest.useFakeTimers();
 
     const wrapper = shallowMount(SummonerSpell, {
+      localVue,
       propsData: {
         index: 1,
         participant: game.participants[0],

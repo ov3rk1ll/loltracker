@@ -36,6 +36,8 @@ import Interval from "@/services/interval";
 
 import { Component, Prop, Vue } from "vue-property-decorator";
 import { ChampionComponentConfig } from "./Champion.vue";
+import { Channel } from "pusher-js";
+import { GameUpdate } from "./Game.vue";
 
 @Component
 export default class SummonerSpell extends Vue {
@@ -43,6 +45,7 @@ export default class SummonerSpell extends Vue {
   @Prop() private participant!: CurrentGameParticipant;
   @Prop() private api!: LolApi;
   @Prop() private config!: ChampionComponentConfig;
+  @Prop() private gameId!: number;
 
   private spell: SummonerSpellType;
 
@@ -64,12 +67,33 @@ export default class SummonerSpell extends Vue {
 
   private interval: Interval;
 
+  private pusherChannel: Channel | null = null;
+
   constructor() {
     super();
     this.interval = Interval.getInstance();
     this.spell = this.api.getSummonerSpellByKey(
       this.index === 1 ? this.participant.spell1Id : this.participant.spell2Id
     );
+  }
+
+  mounted(): void {
+    this.pusherChannel = this.$pusher.subscribe("private-game-" + this.gameId);
+    this.pusherChannel.bind(
+      `client-cooldown-${this.participant.summonerId}-${this.index}`,
+      (msg: { event: string; data: GameUpdate }) => {
+        this.setCooldown(msg.data.cooldown);
+      }
+    );
+  }
+
+  unmounted(): void {
+    if (this.pusherChannel) {
+      this.$pusher.unbind(
+        `client-cooldown-${this.participant.summonerId}-${this.index}`
+      );
+      this.pusherChannel = null;
+    }
   }
 
   private getCooldown(): string {
@@ -88,13 +112,38 @@ export default class SummonerSpell extends Vue {
   }
 
   public startCountdown(): void {
-    this.cooldown = this.api.getSummonerSpellCooldown(
+    const cooldown = this.api.getSummonerSpellCooldown(
       this.spell,
       this.participant.perks,
       this.participant.items
     );
 
-    this.interval.add(this.cooldownCallback);
+    if (this.pusherChannel) {
+      this.pusherChannel.trigger(
+        `client-cooldown-${this.participant.summonerId}-${this.index}`,
+        {
+          event: "cooldown",
+          data: {
+            index: this.index,
+            spellId:
+              this.index === 1
+                ? this.participant.spell1Id
+                : this.participant.spell2Id,
+            summonerId: this.participant.summonerId,
+            cooldown: cooldown,
+          } as GameUpdate,
+        }
+      );
+    }
+
+    this.setCooldown(cooldown);
+  }
+
+  public setCooldown(cooldown: number): void {
+    this.cooldown = cooldown;
+    if (this.cooldown > 0) {
+      this.interval.add(this.cooldownCallback);
+    }
   }
 
   private cooldownCallback() {

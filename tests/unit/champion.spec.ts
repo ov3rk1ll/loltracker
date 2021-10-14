@@ -1,9 +1,13 @@
-import { shallowMount } from "@vue/test-utils";
+import { createLocalVue, shallowMount } from "@vue/test-utils";
 
 import Champion from "@/components/Champion.vue";
 import LolApi from "@/services/lol-api";
+import { PusherPlugin } from "@/services/pusher";
 
 jest.unmock("axios");
+
+const localVue = createLocalVue();
+localVue.use(PusherPlugin, { appKey: "test-key" });
 
 describe("Champion.vue", () => {
   it("toggleBoots changes icon", async () => {
@@ -17,6 +21,7 @@ describe("Champion.vue", () => {
     };
 
     const wrapper = shallowMount(Champion, {
+      localVue,
       propsData: {
         participant: game.participants[0],
         api: api,

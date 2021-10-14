@@ -1,15 +1,20 @@
-import { shallowMount } from "@vue/test-utils";
+import { createLocalVue, shallowMount } from "@vue/test-utils";
 import axios from "axios";
 
 import Game from "@/components/Game.vue";
+import { PusherPlugin } from "@/services/pusher";
 
 jest.unmock("axios");
+
+const localVue = createLocalVue();
+localVue.use(PusherPlugin, { appKey: "test-key" });
 
 describe("Game.vue", () => {
   it("requests API when mounted", async () => {
     const spyCreate = jest.spyOn(axios, "create");
 
     shallowMount(Game, {
+      localVue,
       propsData: { summonerName: "test", region: "euw1" },
     });
 
